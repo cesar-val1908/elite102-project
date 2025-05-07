@@ -1,7 +1,6 @@
 import mysql.connector
 
-x = 10
-while x > 8:
+while True:
     print("Welcome, how can I help you today?")
     print("\n1. Manage accounts")
     print("2. Check your balance")
@@ -27,7 +26,10 @@ while x > 8:
             cursor.execute(query, values)
             connection.commit()
 
-            print("\nAccount created successfully!")
+            account_number = cursor.lastrowid
+
+            print("\nAccount created successfully! Account number: {account_number}")
+            
             cursor.close()
             connection.close()
         elif choice2 == "2":
@@ -47,7 +49,7 @@ while x > 8:
             query = "DELETE FROM bank_info WHERE id_bank_info = %s"
             values = (account_number,)
 
-            cursir.execute(query, values)
+            cursor.execute(query, values)
             connection.commit()
 
             if cursor.rowcount > 0:
@@ -60,11 +62,13 @@ while x > 8:
         elif choice2 == "4":
             print("\nPlease enter account number you'd like to view:")
             account_number = input()
+            print("\nPlease enter your password:")
+            entered_password = input()
 
             connection = mysql.connector.connect(user='root', password='C#apul1n08', database='banking')
             cursor = connection.cursor()
 
-            querey = "SELECT * FROM bank_info WHERE id_bank_info = %s"
+            query = "SELECT * FROM bank_info WHERE id_bank_info = %s"
             values = (account_number,)
 
             cursor.execute(query, values)
@@ -179,7 +183,7 @@ while x > 8:
                 if withdraw_amount <= 0:
                     print("\nWithdrawal amount must be greater than zero.")
                 elif withdraw_amount > stored_balance:
-                    print("\nNot enough funds. Current balance is: ${2:.2f}".format(stored_balance))
+                    print("\nNot enough funds. Current balance is: ${:.2f}".format(stored_balance))
                 else:
                     new_balance = stored_balance - withdraw_amount
 
@@ -199,4 +203,4 @@ while x > 8:
         connection.close()
     elif choice == "5":
         print("Thank you for banking with us, goodbye!")
-        x = 6
+        break
