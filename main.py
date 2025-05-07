@@ -116,7 +116,44 @@ while x > 8:
     elif choice == "3":
         print("\nPlease enter your account number: ")
         account_number = input()
-        print("Please specify the amount you would like to deposit: ")
+        print("Please enter your password.")
+        entered_password = input()
+
+        connection = mysql.connector.connect(user='root', password='C#apul1n08', database='banking')
+        cursor = connection.cursor()
+
+        query = "SELECT balance_bank_info, user_password FROM bank_info WHERE id_bank_info = %s"
+        values = (account_number,)
+
+        cursor.execute(query, values)
+        result = cursor.fetchone()
+
+        if result:
+            stored_balance = result[0]
+            stored_password = result[1]
+
+            if entered_password == stored_password:
+                print("\nPlease enter deposit amount: ")
+                deposit_amount = float(input())
+                if deposit_amount <= 0:
+                    print("\nDeposit amount must be greater than zero!")
+                else:
+                    new_balance = stored_balance + deposit_amount
+
+                    update_query = "UPDATE bank_info SET balance_bank_info = %s WHERE id_bank_info = %s"
+                    update_values = (new_balance, account_number)
+
+                    cursor.execute(update_query, update_values)
+                    connection.commit()
+
+                    print(f"\nDeposit successful! Your new balance is: ${new_balance:.2f}")
+            else:
+                print("\nIncorrect password!")
+        else:
+            print("\nAccount not found!")
+        
+        cursor.close()
+        connection.close()
     elif choice == "4":
         #in development, not yet implemented
         pass
