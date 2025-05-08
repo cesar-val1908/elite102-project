@@ -1,5 +1,6 @@
 import mysql.connector
 
+#create a loop to keep the program running until the user decides to exit
 while True:
     print("Welcome, how can I help you today?")
     print("\n1. Manage accounts")
@@ -7,10 +8,11 @@ while True:
     print("3. Deposit money")
     print("4. Withdraw money")
     print("5. Exit")
-
+#here we ask the user to enter a number between 1 and 5 from the menu 
     choice = input("\nPlease enter your choice (1-5): ")
 
     if choice == "1":
+        #the user can manage accounts by creating, editing, deleting or showing account details
         choice2 = input("\nWhat would you like to do? \n1. Create account\n2. Edit account\n3. Delete account\n4. Show account details")
         if choice2 == "1":
             print("\n Please fill out these details to create an account:")
@@ -26,10 +28,10 @@ while True:
             cursor.execute(query, values)
             connection.commit()
 
-            account_number = cursor.lastrowid
+            cursor.execute("SELECT LAST_INSERT_ID()")
+            account_id = cursor.fetchone()[0]
+            print(f"\nAccount created successfully! Your account number is: {account_id}")  
 
-            print("\nAccount created successfully! Account number: {account_number}")
-            
             cursor.close()
             connection.close()
         elif choice2 == "2":
@@ -88,6 +90,7 @@ while True:
 
             cursor.close()
             connection.close()
+#user can check their balance but must enter their account number and password to do so for security reasons
     elif choice == "2":
         print("\nPlease enter your account number: ")
         account_number = input()
@@ -116,7 +119,7 @@ while True:
 
         cursor.close()
         connection.close()
-#continue with deposit and withdraw options
+#user can deposit money into their account
     elif choice == "3":
         print("\nPlease enter your account number: ")
         account_number = input()
@@ -158,6 +161,7 @@ while True:
         
         cursor.close()
         connection.close()
+#user can withdraw money from their account but must enter their account number and password
     elif choice == "4":
         print("\nPlease enter your account number: ")
         account_number = input()
@@ -201,6 +205,7 @@ while True:
         
         cursor.close()
         connection.close()
+#simple exit option to end the program
     elif choice == "5":
         print("Thank you for banking with us, goodbye!")
         break
